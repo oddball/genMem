@@ -57,6 +57,7 @@ module tb_one_port_mem;
   	     writeEnable =0;
   	     writeData= 0;
 	     @(posedge clk);
+	     #1;
 	     if(readData[width-1:0] != i[width-1:0])
 	       begin
 		  $display("ERROR");

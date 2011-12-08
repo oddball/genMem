@@ -65,6 +65,7 @@ module tb_two_port_mem;
 	     readAddress=k;
      	     readEnable=1;
 	     @(posedge clk);
+	     #1;
 	     if(readData[width-1:0] != k[width-1:0])
 	       begin
 		  $display("ERROR");
