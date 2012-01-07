@@ -30,7 +30,8 @@ module twoPortMem (
    parameter               addresses   = 32;
    parameter		   width       = 8;
    parameter 		   muxFactor   = 0;  
-
+   parameter 		   writeMask   = 1;
+   
    //Auto-calculated, user dont touch
    localparam		   addressWidth =clogb2(addresses);   
    
@@ -38,7 +39,7 @@ module twoPortMem (
  
    input [addressWidth-1:0] writeAddress;
    input 		    writeClk;   
-   input 		    writeEnable;
+   input [writeMask-1:0]    writeEnable;
    input [width-1:0] 	    writeData;
    
    input [addressWidth-1:0] readAddress;
@@ -93,13 +94,14 @@ module twoPortMemSim (
    parameter               addresses   = 32;
    parameter		   width       = 8;
    parameter 		   muxFactor   = 0;  
-
+   parameter 		   writeMask   = 1;
+   
    //Auto-calculated, user dont touch
    localparam		   addressWidth =clogb2(addresses);   
    
    input [addressWidth-1:0] writeAddress;
    input 		    writeClk;   
-   input 		    writeEnable;
+   input [writeMask-1:0]    writeEnable;
    input [width-1:0] 	    writeData;
     
    input [addressWidth-1:0] readAddress;
@@ -110,7 +112,9 @@ module twoPortMemSim (
 
    reg [width-1:0] 	     mem [addresses-1:0];
    reg [width-1:0] 	     readData;
-   
+  
+   integer 		     i;
+       
    initial
      begin
 	$display("%m : simulation model of memory");
@@ -118,9 +122,18 @@ module twoPortMemSim (
   
    always @(posedge writeClk)
      begin
-	if (writeEnable)
+	if (writeEnable!=0)
 	  begin
-	     mem[writeAddress] <= writeData;
+	     if(writeMask==1)
+	       begin
+		  mem[writeAddress] <= writeData;
+	       end
+	     else
+	       begin
+		  for(i=0; i<writeMask; i=i+1)
+		    if(writeEnable[i]==1)
+		      mem[writeAddress][i] <= writeData[i];
+	       end
 	  end
      end
 
