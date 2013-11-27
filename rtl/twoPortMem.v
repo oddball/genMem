@@ -15,63 +15,63 @@
 
 `timescale 1 ns/1 ps
 module twoPortMem (
-		   writeAddress,		   
-		   writeClk,
-		   writeEnable,
-		   writeData,		   
-		   readAddress,
-		   readClk,
-		   readEnable,
-		   readData);
+                   writeAddress,                   
+                   writeClk,
+                   writeEnable,
+                   writeData,              
+                   readAddress,
+                   readClk,
+                   readEnable,
+                   readData);
    
-`include "clogb2.vh"
 
    //user defined  
    parameter               addresses   = 32;
-   parameter		   width       = 8;
-   parameter 		   muxFactor   = 0;  
-   parameter 		   writeMask   = 1;
+   parameter               width       = 8;
+   parameter               muxFactor   = 0;  
+   parameter               writeMask   = 1;
    
    //Auto-calculated, user dont touch
-   localparam		   addressWidth =clogb2(addresses);   
+   localparam              addressWidth =$clog2(addresses);   
    
 
  
    input [addressWidth-1:0] writeAddress;
-   input 		    writeClk;   
+   input                    writeClk;   
    input [writeMask-1:0]    writeEnable;
-   input [width-1:0] 	    writeData;
+   input [width-1:0]        writeData;
    
    input [addressWidth-1:0] readAddress;
-   input 		    readClk;
-   input 		    readEnable;  
-   output [width-1:0] 	    readData;  
+   input                    readClk;
+   input                    readEnable;  
+   output [width-1:0]       readData;  
    
 
    generate
       if((addresses==0)&&(width==0))
-	begin
-	   initial
-	     begin
-		$display("FAIL!! :%m:Parameters, addresses and width can not be set to 0");
-		$stop;
-	     end
+        begin
+           initial
+             begin
+                $display("FAIL!! :%m:Parameters, addresses and width can not be set to 0");
+                $stop;
+             end
         end      
 `include "scriptGeneratedListOfVendorTwoPortMems.vh"
       else
-	begin
-	   twoPortMemSim   #(.addresses  (addresses),
+        begin
+           twoPortMemSim   #(.addresses  (addresses),
                              .width      (width),
-                             .muxFactor (muxFactor)
-			     ) mem (.writeAddress(writeAddress),		   
-				    .writeClk(writeClk),
-				    .writeEnable(writeEnable),
-				    .writeData(writeData),		   
-				    .readAddress(readAddress),
-				    .readClk(readClk),
-				    .readEnable(readEnable),
-				    .readData(readData));
-	end
+                             .muxFactor  (muxFactor),
+                             .writeMask  (writeMask)
+                             ) mem (.writeAddress(writeAddress),                   
+                                    .writeClk(writeClk),
+                                    .writeEnable(writeEnable),
+                                    .writeData(writeData),                 
+                                    .readAddress(readAddress),
+                                    .readClk(readClk),
+                                    .readEnable(readEnable),
+                                    .readData(readData));
+        end
    endgenerate
 endmodule // twoPortMem
 
@@ -79,70 +79,69 @@ endmodule // twoPortMem
 
 
 module twoPortMemSim (
-		   writeAddress,		   
-		   writeClk,
-		   writeEnable,
-		   writeData,		   
-		   readAddress,
-		   readClk,
-		   readEnable,
-		   readData);
+                   writeAddress,                   
+                   writeClk,
+                   writeEnable,
+                   writeData,              
+                   readAddress,
+                   readClk,
+                   readEnable,
+                   readData);
    
-`include "clogb2.vh"
 
    //user defined  
    parameter               addresses   = 32;
-   parameter		   width       = 8;
-   parameter 		   muxFactor   = 0;  
-   parameter 		   writeMask   = 1;
+   parameter               width       = 8;
+   parameter               muxFactor   = 0;  
+   parameter               writeMask   = 1;
    
    //Auto-calculated, user dont touch
-   localparam		   addressWidth =clogb2(addresses);   
+   localparam              addressWidth =$clog2(addresses);   
    
    input [addressWidth-1:0] writeAddress;
-   input 		    writeClk;   
+   input                    writeClk;   
    input [writeMask-1:0]    writeEnable;
-   input [width-1:0] 	    writeData;
+   input [width-1:0]        writeData;
     
    input [addressWidth-1:0] readAddress;
-   input 		    readClk;
-   input 		    readEnable;  
-   output [width-1:0] 	    readData;  
+   input                    readClk;
+   input                    readEnable;  
+   output [width-1:0]       readData;  
 
 
-   reg [width-1:0] 	     mem [addresses-1:0];
-   reg [width-1:0] 	     readData;
+   reg [width-1:0]           mem [addresses-1:0];
+   reg [width-1:0]           readData;
   
-   integer 		     i;
+   integer                   i;
        
    initial
      begin
-	$display("%m : simulation model of memory");
+        $display("%m : simulation model of memory");
      end   
   
    always @(posedge writeClk)
      begin
-	if (writeEnable!=0)
-	  begin
-	     if(writeMask==1)
-	       begin
-		  mem[writeAddress] <= writeData;
-	       end
-	     else
-	       begin
-		  for(i=0; i<writeMask; i=i+1)
-		    if(writeEnable[i]==1)
-		      mem[writeAddress][i] <= writeData[i];
-	       end
-	  end
+        if (writeEnable!=0)
+          begin
+             if(writeMask==1)
+               begin
+                  mem[writeAddress] <= writeData;
+               end
+             else
+               begin
+                  for(i=0; i<writeMask; i=i+1)
+                    if(writeEnable[i]==1)
+                      mem[writeAddress][i] <= writeData[i];
+               end
+          end
      end
 
    always @(posedge writeClk)
      begin
-	if(readEnable)
-	  begin
-	     readData <= mem[readAddress];
-	  end
+        if(readEnable)
+          begin
+             readData <= mem[readAddress];
+          end
      end
    
 endmodule

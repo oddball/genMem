@@ -2,13 +2,12 @@
 `timescale 1 ns/1 ps
 module tb_two_port_mem;
 
-`include "clogb2.vh"
    
    parameter               addresses   = 32;
    parameter		   width       = 8;
    parameter 		   muxFactor   = 0;  
    //Auto-calculated, user dont touch
-   localparam		   addressWidth =clogb2(addresses);
+   localparam		   addressWidth =$clog2(addresses);
 
 
    reg [addressWidth-1:0] writeAddress;

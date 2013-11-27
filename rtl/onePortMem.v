@@ -22,7 +22,7 @@ module onePortMem(readData,
 		  writeData);
 
 		  
-`include "clogb2.vh"
+
 
    //user defined  
    parameter               addresses   = 32;
@@ -30,7 +30,7 @@ module onePortMem(readData,
    parameter 		   muxFactor   = 0;  
 
    //Auto-calculated, user dont touch
-   localparam		   addressWidth =clogb2(addresses);   
+   localparam		   addressWidth =$clog2(addresses);   
    
    output [width-1:0] 	     readData;  
    input 	   	     readEnable; 
@@ -77,7 +77,6 @@ module onePortSimMem(readData,
 		     writeEnable,		  
 		     writeData);
    
-`include "clogb2.vh"
    
    //user defined  
    parameter               addresses   = 32;
@@ -85,7 +84,7 @@ module onePortSimMem(readData,
    parameter 		   muxFactor   = 0;  
    
    //Auto-calculated, user dont touch
-   localparam		   addressWidth =clogb2(addresses);   
+   localparam		   addressWidth =$clog2(addresses);   
    
    output [width-1:0] 	     readData;  
    input 	   	     readEnable; 
